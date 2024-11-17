@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Scheduler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Task Scheduler</h1>
+
+  <div class="task-form">
+    <h2 id="form-title">Create Task</h2>
+    <form id="task-form">
+      <input type="text" id="title" placeholder="Task Title" required />
+      <textarea id="description" placeholder="Task Description"></textarea>
+      <input type="datetime-local" id="due-date" required />
+      <button type="submit" id="submit-button">Create Task</button>
+    </form>
+  </div>
+  
+
+  <div id="task-list">
+    <h2>Task List</h2>
+    <ul id="tasks">
+      <!-- Tasks will appear here -->
+    </ul>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
