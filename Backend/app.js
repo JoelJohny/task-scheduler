@@ -139,17 +139,63 @@ app.patch("/tasks/:id/snooze", (req, res) => {
 });
 
 // Reminder cron job (every minute)
+// cron.schedule("*/1 * * * *", () => {
+//   const tasks = readTasks();
+//   const now = new Date();
+//   const soon = new Date(now.getTime() + 15 * 60000); // 15 minutes from now
+
+//   tasks.forEach((task) => {
+//     if (new Date(task.dueDate) <= soon && !task.completed) {
+//       console.log(`Reminder: Task "${task.title}" is due soon!`);
+//     }
+//   });
+// });
+
+const remindersFilePath = path.join(__dirname, "reminders.json");
+
+// Read reminders from JSON
+const readReminders = () => {
+  try {
+    const data = fs.readFileSync(remindersFilePath, "utf8");
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error reading reminders:", error);
+    return [];
+  }
+};
+
+// Write reminders to JSON
+const writeReminders = (reminders) => {
+  try {
+    fs.writeFileSync(remindersFilePath, JSON.stringify(reminders, null, 2), "utf8");
+  } catch (error) {
+    console.error("Error writing reminders:", error);
+  }
+};
+
 cron.schedule("*/1 * * * *", () => {
   const tasks = readTasks();
   const now = new Date();
   const soon = new Date(now.getTime() + 15 * 60000); // 15 minutes from now
 
-  tasks.forEach((task) => {
-    if (new Date(task.dueDate) <= soon && !task.completed) {
-      console.log(`Reminder: Task "${task.title}" is due soon!`);
-    }
-  });
+  const reminders = tasks
+    .filter((task) => new Date(task.dueDate) <= soon && !task.completed)
+    .map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+    }));
+
+  writeReminders(reminders);
 });
+
+// Add an endpoint to fetch reminders
+app.get("/reminders", (req, res) => {
+  const reminders = readReminders();
+  res.json(reminders);
+});
+
 
 // Start server
 app.listen(port, () => {

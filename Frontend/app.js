@@ -10,6 +10,37 @@ const dueDateInput = document.getElementById("due-date");
 const formTitle = document.getElementById("form-title");
 const submitButton = document.getElementById("submit-button");
 
+const shownReminders = new Set();
+
+const fetchReminders = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/reminders");
+    const reminders = await response.json();
+    showRemindersAsAlerts(reminders);
+  } catch (error) {
+    console.error("Error fetching reminders:", error);
+  }
+};
+
+// Show reminders as alerts
+const showRemindersAsAlerts = (reminders) => {
+  reminders.forEach((reminder) => {
+    // Only show alert if it hasn't already been shown
+    if (!shownReminders.has(reminder.id)) {
+      alert(
+        `Reminder: "${reminder.title}"\n\n${reminder.description}\nDue: ${new Date(reminder.dueDate).toLocaleString()}`
+      );
+      shownReminders.add(reminder.id); // Mark this reminder as shown
+    }
+  });
+};
+
+// Periodically fetch reminders
+setInterval(fetchReminders, 60000); // Fetch reminders every minute
+
+// Initial fetch
+fetchReminders();
+
 // Fetch all tasks and display them
 const fetchTasks = async () => {
   try {
@@ -21,6 +52,15 @@ const fetchTasks = async () => {
   }
 };
 
+const resetButton = document.getElementById("reset");
+
+// Add a click event listener
+resetButton.addEventListener("click", () => {
+  // Clear additional data or perform custom actions
+  formTitle.innerText = "Create Task";
+  submitButton.innerText = "Create Task";
+});
+
 // Display tasks in the UI
 const displayTasks = (tasks) => {
   taskList.innerHTML = ""; // Clear current list
@@ -31,15 +71,24 @@ const displayTasks = (tasks) => {
       <p>${task.description}</p>
       <p><strong>Due:</strong> ${new Date(task.dueDate).toLocaleString()}</p>
       <div class="task-actions">
-        <button onclick="markCompleted(${task.id})">Mark as Completed</button>
+      ${
+        task.completed
+          ? `<button disabled style="background-color: grey; color: #fff;">Completed</button>`
+          : `<button onclick="markCompleted(${task.id})">Mark as Completed</button>`
+      }
         <button class="edit" onclick="editTask(${task.id})">Edit</button>
-        <button class="snooze-button" onclick="snoozeTask(${task.id})">Snooze</button>
         <button onclick="deleteTask(${task.id})">Delete</button>
       </div>
     `;
+
+    if (task.completed) {
+      // taskItem.style.textDecoration = "line-through";
+      taskItem.style.opacity = "0.6";
+    }
     taskList.appendChild(taskItem);
   });
 };
+// <button class="snooze-button" onclick="snoozeTask(${task.id})">Snooze</button>
 
 // Default form submission handler (for creating tasks)
 const defaultSubmitHandler = async (e) => {
@@ -57,7 +106,7 @@ const defaultSubmitHandler = async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTask),
     });
-    taskForm.reset();
+    resetButton.click();
     fetchTasks();
   } catch (error) {
     console.error("Error creating task:", error);
@@ -144,7 +193,7 @@ const editTask = async (id) => {
           body: JSON.stringify(updatedTask),
         });
         fetchTasks();
-        taskForm.reset();
+        resetButton.click();
         formTitle.innerText = "Create Task";
         submitButton.innerText = "Create Task";
         taskForm.onsubmit = defaultSubmitHandler; // Reset form to default behavior
