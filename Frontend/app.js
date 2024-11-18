@@ -1,7 +1,7 @@
-// API Base URL (change if needed)
+
 const apiUrl = "http://localhost:3000/tasks";
 
-// DOM elements
+
 const taskForm = document.getElementById("task-form");
 const taskList = document.getElementById("tasks");
 const titleInput = document.getElementById("title");
@@ -22,26 +22,26 @@ const fetchReminders = async () => {
   }
 };
 
-// Show reminders as alerts
+
 const showRemindersAsAlerts = (reminders) => {
   reminders.forEach((reminder) => {
-    // Only show alert if it hasn't already been shown
+    
     if (!shownReminders.has(reminder.id)) {
       alert(
         `Reminder: "${reminder.title}"\n\n${reminder.description}\nDue: ${new Date(reminder.dueDate).toLocaleString()}`
       );
-      shownReminders.add(reminder.id); // Mark this reminder as shown
+      shownReminders.add(reminder.id); 
     }
   });
 };
 
-// Periodically fetch reminders
-setInterval(fetchReminders, 60000); // Fetch reminders every minute
 
-// Initial fetch
+setInterval(fetchReminders, 60000); 
+
+
 fetchReminders();
 
-// Fetch all tasks and display them
+
 const fetchTasks = async () => {
   try {
     const response = await fetch(apiUrl);
@@ -54,16 +54,16 @@ const fetchTasks = async () => {
 
 const resetButton = document.getElementById("reset");
 
-// Add a click event listener
+
 resetButton.addEventListener("click", () => {
-  // Clear additional data or perform custom actions
+ 
   formTitle.innerText = "Create Task";
   submitButton.innerText = "Create Task";
 });
 
-// Display tasks in the UI
+
 const displayTasks = (tasks) => {
-  taskList.innerHTML = ""; // Clear current list
+  taskList.innerHTML = ""; 
   tasks.forEach((task) => {
     const taskItem = document.createElement("li");
     taskItem.innerHTML = `
@@ -82,15 +82,13 @@ const displayTasks = (tasks) => {
     `;
 
     if (task.completed) {
-      // taskItem.style.textDecoration = "line-through";
+      
       taskItem.style.opacity = "0.6";
     }
     taskList.appendChild(taskItem);
   });
 };
-// <button class="snooze-button" onclick="snoozeTask(${task.id})">Snooze</button>
 
-// Default form submission handler (for creating tasks)
 const defaultSubmitHandler = async (e) => {
   e.preventDefault();
 
@@ -113,10 +111,10 @@ const defaultSubmitHandler = async (e) => {
   }
 };
 
-// Set the default form submission handler
+
 taskForm.onsubmit = defaultSubmitHandler;
 
-// Mark task as completed
+
 const markCompleted = async (id) => {
   try {
     await fetch(`${apiUrl}/${id}/complete`, { method: "PATCH" });
@@ -126,7 +124,7 @@ const markCompleted = async (id) => {
   }
 };
 
-// Snooze task
+
 const snoozeTask = async (id) => {
   const snoozeMinutes = prompt("Enter minutes to snooze: ");
   if (!snoozeMinutes || isNaN(snoozeMinutes)) {
@@ -146,37 +144,37 @@ const snoozeTask = async (id) => {
   }
 };
 
-// Edit task
+
 const editTask = async (id) => {
   try {
-    // Fetch the task to edit
+   
     const tasks = await fetch(apiUrl).then((res) => res.json());
     const task = tasks.find((t) => t.id === id);
 
     const utcDate = task.dueDate;
     const localDate = new Date(utcDate);
 
-    // Extract components
+    
     const year = localDate.getFullYear();
-    const month = String(localDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const month = String(localDate.getMonth() + 1).padStart(2, "0"); 
     const day = String(localDate.getDate()).padStart(2, "0");
     const hours = String(localDate.getHours()).padStart(2, "0");
     const minutes = String(localDate.getMinutes()).padStart(2, "0");
 
-    // Format as 'YYYY-MM-DDTHH:mm'
+    
     const localIso = `${year}-${month}-${day}T${hours}:${minutes}`;
 
-    // Pre-fill the form with current task details
+    
     titleInput.value = task.title;
     descriptionInput.value = task.description;
-    dueDateInput.value = localIso  // Remove the "Z" from ISO string
+    dueDateInput.value = localIso  
     console.log(task.dueDate, localIso);
 
-    // Update form title and button text
+   
     formTitle.innerText = "Edit Task";
     submitButton.innerText = "Update Task";
 
-    // Change form submission behavior to update the task
+    
     taskForm.onsubmit = async (e) => {
       e.preventDefault();
 
@@ -196,7 +194,7 @@ const editTask = async (id) => {
         resetButton.click();
         formTitle.innerText = "Create Task";
         submitButton.innerText = "Create Task";
-        taskForm.onsubmit = defaultSubmitHandler; // Reset form to default behavior
+        taskForm.onsubmit = defaultSubmitHandler; 
       } catch (error) {
         console.error("Error updating task:", error);
       }
@@ -206,7 +204,7 @@ const editTask = async (id) => {
   }
 };
 
-// Delete task
+
 const deleteTask = async (id) => {
   try {
     await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
@@ -216,5 +214,4 @@ const deleteTask = async (id) => {
   }
 };
 
-// Initial fetch
 fetchTasks();
