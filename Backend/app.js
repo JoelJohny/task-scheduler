@@ -137,8 +137,8 @@ app.patch("/tasks/:id/complete", (req, res) => {
 const readReminders = () => {
   try {
     const data = fs.readFileSync(filePath, "utf8");
-    return data.filter(reminder => !reminder.completed);
-    // return JSON.parse(data);
+    const updated= data.filter(reminder => !reminder.completed);
+    return JSON.parse(updated);
   } catch (error) {
     console.error("Error reading reminders:", error);
     return [];
