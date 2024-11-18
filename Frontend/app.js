@@ -167,24 +167,7 @@ const markCompleted = async (id) => {
 };
 
 
-const snoozeTask = async (id) => {
-  const snoozeMinutes = prompt("Enter minutes to snooze: ");
-  if (!snoozeMinutes || isNaN(snoozeMinutes)) {
-    alert("Invalid snooze time");
-    return;
-  }
 
-  try {
-    await fetch(`${apiUrl}/${id}/snooze`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ snoozeMinutes: parseInt(snoozeMinutes) }),
-    });
-    fetchTasks();
-  } catch (error) {
-    console.error("Error snoozing task:", error);
-  }
-};
 
 
 const editTask = async (id) => {

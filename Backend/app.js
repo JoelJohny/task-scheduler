@@ -117,25 +117,6 @@ app.patch("/tasks/:id/complete", (req, res) => {
 });
 
 
-app.patch("/tasks/:id/snooze", (req, res) => {
-  const taskId = parseInt(req.params.id);
-  const { snoozeMinutes } = req.body;
-
-  if (!snoozeMinutes) {
-    return res.status(400).json({ message: "Snooze minutes are required" });
-  }
-
-  const tasks = readTasks();
-  const task = tasks.find((task) => task.id === taskId);
-
-  if (!task) {
-    return res.status(404).json({ message: "Task not found" });
-  }
-
-  task.dueDate = new Date(new Date(task.dueDate).getTime() + snoozeMinutes * 60000).toISOString();
-  writeTasks(tasks);
-  res.status(200).json({ message: "Task snoozed", task });
-});
 
 
 // cron.schedule("*/1 * * * *", () => {
