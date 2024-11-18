@@ -150,13 +150,14 @@ app.patch("/tasks/:id/snooze", (req, res) => {
 //   });
 // });
 
-const remindersFilePath = path.join(__dirname, "reminders.json");
+// const remindersFilePath = path.join(__dirname, "reminders.json");
 
 
 const readReminders = () => {
   try {
-    const data = fs.readFileSync(remindersFilePath, "utf8");
-    return JSON.parse(data);
+    const data = fs.readFileSync(filePath, "utf8");
+    return data.filter(reminder => !reminder.completed);
+    // return JSON.parse(data);
   } catch (error) {
     console.error("Error reading reminders:", error);
     return [];
@@ -164,30 +165,30 @@ const readReminders = () => {
 };
 
 
-const writeReminders = (reminders) => {
-  try {
-    fs.writeFileSync(remindersFilePath, JSON.stringify(reminders, null, 2), "utf8");
-  } catch (error) {
-    console.error("Error writing reminders:", error);
-  }
-};
+// const writeReminders = (reminders) => {
+//   try {
+//     fs.writeFileSync(remindersFilePath, JSON.stringify(reminders, null, 2), "utf8");
+//   } catch (error) {
+//     console.error("Error writing reminders:", error);
+//   }
+// };
 
-cron.schedule("*/1 * * * *", () => {
-  const tasks = readTasks();
-  const now = new Date();
-  const soon = new Date(now.getTime() + 15 * 60000); 
+// cron.schedule("*/1 * * * *", () => {
+//   const tasks = readTasks();
+//   const now = new Date();
+//   const soon = new Date(now.getTime() + 15 * 60000); 
 
-  const reminders = tasks
-    .filter((task) => new Date(task.dueDate) <= soon && !task.completed)
-    .map((task) => ({
-      id: task.id,
-      title: task.title,
-      description: task.description,
-      dueDate: task.dueDate,
-    }));
+//   const reminders = tasks
+//     .filter((task) => new Date(task.dueDate) <= soon && !task.completed)
+//     .map((task) => ({
+//       id: task.id,
+//       title: task.title,
+//       description: task.description,
+//       dueDate: task.dueDate,
+//     }));
 
-  writeReminders(reminders);
-});
+//   writeReminders(reminders);
+// });
 
 app.get("/reminders", (req, res) => {
   const reminders = readReminders();
