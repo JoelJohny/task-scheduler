@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f9;
+  }
+  
+  h1 {
+    text-align: left;
+  }
+  
+  .task-form{
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  input, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  textarea {
+    height: 100px;
+  }
+/*   
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+  } */
+  
+  /* button:hover {
+    background-color: #0056b3;
+  } */
+  
+  #tasks {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #tasks li {
+    background-color: #f9f9f9;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  .task-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .task-actions button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+  }
+  
+  .task-actions button:hover {
+    background-color: #218838;
+  }
+  
+  .snooze-button {
+    background-color: #ffc107;
+  }
+  
+  .snooze-button:hover {
+    background-color: #e0a800;
+  }
+  
+
+
+  
